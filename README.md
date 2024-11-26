@@ -8,7 +8,7 @@
 ## 起動方法
 以下のコードをコピーし、ブラウザのURL欄に貼り付けてください。
 ```
-javascript:(()=>{var script=document.createElement("script");script.src="https://phonedev.siyukatu.com/main.js";document.body.append(script);})();
+javascript:(()=>{var script=document.createElement("script");script.src="https://phonedev.siyukatu.com/main.js?_="+Date.now();document.body.append(script);})();
 ```
 コピーして貼り付けると、 `javascript:` の部分が消える場合があります。<br>
 消える場合は手動で追加して下さい。
