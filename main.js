@@ -188,7 +188,7 @@ var shadowRoot = host.attachShadow({ mode: "closed" });
 var div = document.createElement("div");
 div.id = "phone-dev-mainwindow";
 var style = document.createElement("style");
-style.innerHTML = `[Minified CSS Data]`;
+style.innerHTML = "[[[Minified CSS Data]]]";
 div.append(style);
 
 var mvfc = function(e){
@@ -220,10 +220,8 @@ div.append(fullbtn);
 var header = document.createElement("div");
 header.classList.add("header");
 header.addEventListener("pointermove", mvfc);
-document.addEventListener('touchmove', function(event){
-    if (event.target.classList.contains("header")){
-        event.preventDefault();
-    }
+div.addEventListener("touchmove", function(event){
+    event.preventDefault();
 }, { passive: false });
 var title = document.createElement("div");
 title.classList.add("title");
