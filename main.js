@@ -4,9 +4,89 @@ let selected = "elements";
 let console_output = [];
 let http_requests = [];
 
+function write_element(node, pos=null){
+    var item = document.createElement("div");
+    item.original = node;
+    item.classList.add("item");
+    if (node.nodeType === 1){
+        var tag = document.createElement("div");
+        tag.classList.add("tag");
+        var name = document.createElement("span");
+        name.classList.add("name");
+        name.innerText = "<"+node.tagName.toLowerCase();
+        tag.append(name);
+        var attaributes = document.createElement("div");
+        attaributes.classList.add("attributes");
+        Array.from(node.attributes).forEach((attr) => {
+            var attribute = document.createElement("div");
+            attribute.classList.add("attribute");
+            var name = document.createElement("span");
+            name.classList.add("name");
+            name.innerText = attr.name;
+            attribute.append(name);
+            var value = document.createElement("span");
+            value.classList.add("value");
+            var text = document.createElement("div");
+            text.classList.add("valuetext");
+            text.innerText = attr.value;
+            value.append(text);
+            attribute.append(value);
+            attaributes.append(attribute);
+        });
+        tag.append(attaributes);
+        var close = document.createElement("span");
+        close.classList.add("close");
+        close.innerText = ">";
+        tag.append(close);
+        item.append(tag);
+
+        if (node.children && node.children.length > 0){
+            var children = document.createElement("div");
+            children.classList.add("children");
+            Array.from(node.children).forEach((child) => {
+                write_element(child, children);
+            });
+            item.append(children);
+        } else {
+            var text = document.createElement("div");
+            text.style.whiteSpace = "nowrap";
+            text.innerText = node.innerText;
+            div.append(text);
+            if (text.innerText.length < 20){
+                item.classList.add("nochildren");
+            } else {
+                text.classList.add("text");
+            }
+            item.append(text);
+        }
+
+        if (node.outerHTML.includes("</")){
+            var tagclose = document.createElement("div");
+            tagclose.classList.add("tagclose");
+            tagclose.innerText = "</"+node.tagName.toLowerCase()+">";
+            item.append(tagclose);
+        }
+    }
+    if (pos === null){
+        content.append(item);
+    } else {
+        pos.append(item);
+    }
+}
+(() => {
+    var observer = new MutationObserver(function(mutationList, observer){
+        if (div.querySelector("#phone-dev-mainwindow .content.elements") !== null) write_element(document.documentElement);
+    });
+    observer.observe(document.documentElement, {
+        attributes: true,
+        childList: true,
+        subtree: true
+    });
+})();
+
 function add_log(type, args, logtime, logs=null){
     if (logs === null){
-        logs = div.querySelector("#phone-dev-mainwindow .content.log .logs");
+        logs = div.querySelector("#phone-dev-mainwindow .content.console .logs");
     }
     if (logs === null) return;
     var item = document.createElement("div");
@@ -29,12 +109,12 @@ function add_log(type, args, logtime, logs=null){
     if (is_scroll) logs_par.scrollTop = logs_par.scrollHeight;
 }
 
-["log", "warn", "error", "debug"].forEach(type => {
-    console["default_"+type] = console.log.bind(console);
+["log", "warn", "error", "debug", "info", "table", "trace"].forEach((type) => {
+    var original = console[type];
     console[type] = function(){
-        console["default_"+type].apply(console, arguments);
         console_output.push([type, Array.from(arguments), Date.now()]);
         add_log(type, Array.from(arguments), Date.now());
+        original.apply(console, arguments);
     }
 });
 window.addEventListener("error", function(e){
@@ -215,11 +295,9 @@ function update(){
         content.className = "content";
         if (selected === "elements"){
             content.classList.add("elements");
-            function write_element(node){
-            }
             write_element(document.documentElement);
         } else if (selected === "console"){
-            content.classList.add("log");
+            content.classList.add("console");
             var logs = document.createElement("div");
             logs.classList.add("logs");
             console_output.forEach((output) => {

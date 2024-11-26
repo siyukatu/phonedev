@@ -1,6 +1,6 @@
 #phone-dev-mainwindow {
     position:fixed;
-    background: rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.9);
     backdrop-filter: blur(15px);
     box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
     border-radius: 5px;
@@ -95,11 +95,60 @@
         }
     }
     .content{
-        overflow-y: scroll;
         flex: 1;
-        &.log{
+        &.elements{
+            overflow-y: scroll;
             display: flex;
             flex-direction: column;
+            .item{
+                .tag{
+                    display: flex;
+                    .attributes{
+                        display: flex;
+                        .attribute{
+                            margin-left: 5px;
+                            white-space: nowrap;
+                            display: flex;
+                            .value{
+                                display: flex;
+                                .valuetext{
+                                    max-width: 250px;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                    white-space: nowrap;
+                                }
+                                &::before{
+                                    content: '="';
+                                }
+                                &::after{
+                                    content: '"';
+                                }
+                            }
+                        }
+                    }
+                }
+                > .text {
+                    &::before, &::after{
+                        content: '"';
+                    }
+                }
+                .children{
+                    padding-left: 20px;
+                }
+                &:not(.nochildren){
+                    .text{
+                        padding-left: 20px;
+                    }
+                }
+                &.nochildren{
+                    display: flex;
+                }
+            }
+        }
+        &.console{
+            display: flex;
+            flex-direction: column;
+            overflow-y: scroll;
             .logs{
                 padding: 0px 10px;
                 flex: 1;
@@ -145,7 +194,7 @@
                 font-size: 14px;
                 position: sticky;
                 bottom: 0px;
-                background: rgba(255,255,255,0.8);
+                background: rgba(255,255,255,0.5);
             }
         }
     }
