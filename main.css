@@ -63,6 +63,9 @@
                     appearance: none;
                     border: none;
                     background: #000;
+                    height: 2px;
+                    width: 18px;
+                    padding: 0px;
                     margin-top: auto;
                     cursor: pointer;
                 }

@@ -11,5 +11,4 @@ var minified = UglifyJS.minify(main_js);
 if (!fs.existsSync("output")){
     fs.mkdirSync("output");
 }
-console.log(minified_css);
 fs.writeFileSync("output/main.js", minified.code.replace('"[[[Minified CSS Data]]]"', "`"+minified_css.replace(/\\/g, "\\\\").replace(/`/g, "\\`")+"`"));

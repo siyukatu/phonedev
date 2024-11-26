@@ -220,7 +220,7 @@ div.append(fullbtn);
 var header = document.createElement("div");
 header.classList.add("header");
 header.addEventListener("pointermove", mvfc);
-div.addEventListener("touchmove", function(event){
+host.addEventListener("touchmove", function(event){
     event.preventDefault();
 }, { passive: false });
 var title = document.createElement("div");
