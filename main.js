@@ -193,8 +193,12 @@ div.append(style);
 
 var mvfc = function(e){
     if (e.buttons){
-        var top = e.movementY+div.offsetTop+"px";
-        var left = e.movementX+div.offsetLeft+"px";
+        var top = e.movementY+div.offsetTop;
+        var left = e.movementX+div.offsetLeft;
+        if (parseInt(top) < 0) top = 0;
+        if (parseInt(left) < 0) left = 0;
+        top = top+"px";
+        left = left+"px";
         if (div.style.top != top || div.style.left != left){
             moved = true;
         }
