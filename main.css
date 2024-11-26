@@ -106,11 +106,11 @@
             .item{
                 .tag{
                     display: flex;
+                    white-space: nowrap;
                     .attributes{
                         display: flex;
                         .attribute{
                             margin-left: 5px;
-                            white-space: nowrap;
                             display: flex;
                             .value{
                                 display: flex;
@@ -128,9 +128,6 @@
                                 }
                             }
                         }
-                    }
-                    .name{
-                        white-space: nowrap;
                     }
                 }
                 > .text {
