@@ -1,0 +1,173 @@
+#phone-dev-mainwindow {
+    position:fixed;
+    background: rgba(255,255,255,0.8);
+    backdrop-filter: blur(15px);
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    font-family: sans-serif;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    z-index: 100000;
+    will-change: top, left;
+    color: #000;
+    max-width: 350px;
+    max-height: 500px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    .header{
+        padding: 2px 15px;
+        background: rgba(0,0,0,0.05);
+        display: flex;
+        cursor: move;
+        .title{
+            margin: auto 0px;
+            font-size: 14px;
+            pointer-events: none;
+        }
+        .buttons{
+            margin-left: auto;
+            display: flex;
+            .button{
+                padding: 10px 0px;
+                cursor: pointer;
+                display: flex;
+                margin-left: 10px;
+                .closebutton{
+                    appearance: none;
+                    border: none;
+                    background: none;
+                    cursor: pointer;
+                    position: relative;
+                    width: 14px;
+                    height: 14px;
+                    &::before, &::after{
+                        content: "";
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        width: 2px;
+                        height: 15px;
+                        background: black;
+                    }
+                    &::before{
+                        transform: translate(-50%, -50%) rotate(45deg);
+                    }
+                    &::after{
+                        transform: translate(-50%, -50%) rotate(-45deg);
+                    }
+                }
+                .minibutton{
+                    appearance: none;
+                    border: none;
+                    background: #000;
+                    margin-top: auto;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+    .menu{
+        display: flex;
+        overflow-y: scroll;
+        .item{
+            display: block;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-size: 12px;
+            white-space: nowrap;
+            border-bottom: solid 1px #ccc;
+            &:hover{
+                background: rgba(200, 200, 255, 0.2);
+            }
+            &.selected{
+                background: rgba(200, 200, 255, 0.4);
+                border-bottom: solid 1px #55c;
+                z-index: 1;
+            }
+        }
+        .dummyitem{
+            display: block;
+            border-bottom: solid 1px #ccc;
+            width: 100%;
+        }
+    }
+    .content{
+        overflow-y: scroll;
+        flex: 1;
+        &.log{
+            display: flex;
+            flex-direction: column;
+            .logs{
+                padding: 0px 10px;
+                flex: 1;
+                .item{
+                    padding: 2px 10px;
+                    padding-top: 5px;
+                    display: flex;
+                    border-bottom: solid 1px #f0f0f0;
+                    font-size: 12px;
+                    &[data-type="log"]{
+                        color: black;
+                    }
+                    &[data-type="warn"]{
+                        color: orange;
+                    }
+                    &[data-type="error"]{
+                        color: red;
+                    }
+                    &[data-type="debug"]{
+                        color: blue;
+                    }
+                    &[data-type="input"]{
+                        color: green;
+                    }
+                    &[data-type="output"]{
+                        color: green;
+                    }
+                    .text{
+                        display: block;
+                    }
+                    .time{
+                        margin-left: auto;
+                        color: #888;
+                    }
+                }
+            }
+            .input{
+                appearance: none;
+                padding: 10px 20px;
+                border: none;
+                border-top: solid 1px #f0f0f0;
+                outline: none;
+                font-size: 14px;
+                position: sticky;
+                bottom: 0px;
+                background: rgba(255,255,255,0.8);
+            }
+        }
+    }
+    .fullbtn{
+        display: none;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        background: #f0f0f0;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        z-index: 10000000;
+    }
+    &.minimized{
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        .fullbtn{
+            display: flex;
+        }
+    }
+}
