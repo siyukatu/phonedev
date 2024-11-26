@@ -1,8 +1,8 @@
 (() => {
-let selected = "elements";
+var selected = "elements";
 
-let console_output = [];
-let http_requests = [];
+var console_output = [];
+var http_requests = [];
 
 function write_element(node, pos=null){
     var item = document.createElement("div");

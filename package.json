@@ -1,0 +1,24 @@
+{
+  "name": "phonedev",
+  "version": "1.0.0",
+  "description": "スマホで使えるデベロッパーツールもどき",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/siyukatu/phonedev.git"
+  },
+  "author": "siyukatu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/siyukatu/phonedev/issues"
+  },
+  "homepage": "https://github.com/siyukatu/phonedev#readme",
+  "dependencies": {
+    "clean-css": "^5.3.3",
+    "uglify-js": "^3.19.3"
+  }
+}
