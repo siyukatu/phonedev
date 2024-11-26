@@ -13,13 +13,45 @@ function write_element(node, pos=null){
         tag.classList.add("tag");
         var name = document.createElement("span");
         name.classList.add("name");
-        name.innerText = "<"+node.tagName.toLowerCase();
+        name.innerText = "<";
+        tag.append(name);
+        var name = document.createElement("span");
+        name.classList.add("name");
+        name.classList.add("editable");
+        name.innerText = node.tagName.toLowerCase();
+        name.edit = function(value){
+            var newnode = document.createElement(value);
+            Array.from(node.attributes).forEach((attr) => {
+                newnode.setAttribute(attr.name, attr.value);
+            });
+            Array.from(node.childNodes).forEach((child) => {
+                newnode.append(child);
+            });
+            node.replaceWith(newnode);
+        }
         tag.append(name);
         var attaributes = document.createElement("div");
         attaributes.classList.add("attributes");
         Array.from(node.attributes).forEach((attr) => {
             var attribute = document.createElement("div");
             attribute.classList.add("attribute");
+            attribute.classList.add("editable");
+            attribute.edit_text = attr.name+"=\""+attr.value+"\"";
+            attribute.edit = function(value){
+                var splited = value.split("=\"",2);
+                var attrname = splited[0];
+                var attrvalue = splited[1];
+                if (attrvalue.endsWith("\"")){
+                    attrvalue = attrvalue.slice(0, -1);
+                }
+                if (attrvalue.startsWith("\"")){
+                    attrvalue = attrvalue.slice(1);
+                }
+                node.setAttribute(attrname, attrvalue);
+                if (attrname !== attr.name){
+                    node.removeAttribute(attr.name);
+                }
+            }
             var name = document.createElement("span");
             name.classList.add("name");
             name.innerText = attr.name;
@@ -40,18 +72,33 @@ function write_element(node, pos=null){
         tag.append(close);
         item.append(tag);
 
-        if (node.children && node.children.length > 0){
+        if (node.childNodes && node.childNodes.length > 0){
             var children = document.createElement("div");
             children.classList.add("children");
-            Array.from(node.children).forEach((child) => {
-                write_element(child, children);
+            node.childNodes.forEach((child) => {
+                if (child.nodeType === 1){
+                    write_element(child, children);
+                } else if (child.nodeType === 3){
+                    if (child.textContent.trim() === "") return;
+                    var text = document.createElement("div");
+                    text.original = child;
+                    text.textContent = child.textContent;
+                    text.classList.add("text");
+                    text.classList.add("editable");
+                    text.edit = function(value){
+                        child.textContent = value;
+                    }
+                    if (text.innerText.length < 20){
+                        children.classList.add("nochildren");
+                    }
+                    children.append(text);
+                }
             });
             item.append(children);
         } else {
             var text = document.createElement("div");
             text.style.whiteSpace = "nowrap";
             text.innerText = node.innerText;
-            div.append(text);
             if (text.innerText.length < 20){
                 item.classList.add("nochildren");
             } else {
@@ -73,14 +120,20 @@ function write_element(node, pos=null){
         pos.append(item);
     }
 }
+
 (() => {
     var observer = new MutationObserver(function(mutationList, observer){
-        if (div.querySelector("#phone-dev-mainwindow .content.elements") !== null) write_element(document.documentElement);
+        if (div.querySelector("#phone-dev-mainwindow .content.elements") !== null) {
+            write_element(document.documentElement);
+        }
     });
     observer.observe(document.documentElement, {
-        attributes: true,
         childList: true,
-        subtree: true
+        subtree: true,
+        attributes: true,
+        characterData: true,
+        attributeOldValue: true,
+        characterDataOldValue: true
     });
 })();
 
@@ -182,6 +235,32 @@ window.addEventListener("error", function(e){
         console.log("HTTP Request", conn);
     }
 })(window.fetch);
+
+(function(WebSocket){
+    window.WebSocket = function(url, protocols){
+        var conn = [url, protocols, null, [[0, Date.now()]], "waiting"];
+        var ws = new WebSocket(url, protocols);
+        ws.addEventListener("open", function(){
+            conn[3].push([1, Date.now()]);
+            conn[4] = "opened";
+        });
+        ws.addEventListener("message", function(){
+            conn[3].push([2, Date.now()]);
+            conn[4] = "message";
+        });
+        ws.addEventListener("close", function(){
+            conn[3].push([3, Date.now()]);
+            conn[4] = "closed";
+        });
+        ws.addEventListener("error", function(){
+            conn[3].push([4, Date.now()]);
+            conn[4] = "error";
+        });
+        http_requests.push(conn);
+        console.log("HTTP Request", conn);
+        return ws;
+    }
+})(window.WebSocket);
 
 var host = document.createElement("div");
 var shadowRoot = host.attachShadow({ mode: "closed" });
@@ -339,5 +418,55 @@ function update(){
     });
 }
 
+function get_textsize(text, font, max_width=null){
+    var canvas = document.createElement("canvas");
+    var context = canvas.getContext("2d");
+    context.font = font;
+    var metrics = context.measureText(text);
+    var width = metrics.width;
+    if (max_width !== null && width > max_width){
+        width = max_width;
+    }
+    return {width: width, height: (metrics.actualBoundingBoxAscent+metrics.actualBoundingBoxDescent)*2};
+}
+
+function is_contain_class(node, classname){
+    if (node.classList.contains(classname)){
+        return [true, node];
+    } else {
+        if (node.parentNode){
+            return is_contain_class(node.parentNode, classname);
+        }
+    }
+    return [false, null];
+}
+
+div.addEventListener("dblclick", function(e){
+    var contain = is_contain_class(e.target, "editable");
+    console.log(contain);
+    if (contain[0]){
+        var target = contain[1];
+        var input = document.createElement("textarea");
+        input.classList.add("htmleditbox");
+        input.value = target.edit_text ?? target.innerText;
+        var max_width = target.offsetWidth;
+        input.addEventListener("input", function(){
+            var textsize = get_textsize(input.value, "16px sans-serif", max_width);
+            input.style.width = textsize.width+"px";
+            input.style.height = "auto";
+            input.style.height = input.scrollHeight+"px";
+        });
+        target.replaceWith(input);
+        input.focus();
+        input.addEventListener("blur", function(){
+            console.log(target);
+            target.edit(input.value);
+            input.replaceWith(target);
+        });
+        var textsize = get_textsize(input.value, "16px sans-serif", max_width);
+        input.style.width = textsize.width+"px";
+        input.style.height = input.scrollHeight+"px";
+    }
+});
 changetab("elements");
 })();
