@@ -174,6 +174,39 @@ window.addEventListener("error", function(e){
     console.error(e);
 });
 
+function conn_update(requests=null){
+    if (requests === null) requests = div.querySelector("#phone-dev-mainwindow .content.network .requests");
+    if (requests === null) return;
+    requests.innerHTML = "";
+    var dummyitem = document.createElement("div");
+    dummyitem.classList.add("dummyitem");
+    requests.append(dummyitem);
+    http_requests.forEach((request) => {
+        var item = document.createElement("div");
+        item.classList.add("item");
+        var url = document.createElement("div");
+        url.classList.add("url");
+        var splited_url = request[1].split("/");
+        var filename = splited_url[splited_url.length-1];
+        url.innerText = filename === "" ? splited_url[splited_url.length-2] : filename;
+        item.append(url);
+        var status = document.createElement("div");
+        status.classList.add("status");
+        status.innerText = request[4];
+        item.append(status);
+        var times = document.createElement("div");
+        times.classList.add("times");
+        request[3].forEach((time) => {
+            var t = document.createElement("div");
+            t.classList.add("time");
+            t.innerText = time[0]+" "+(time[1]-request[3][0][1])+"ms";
+            times.append(t);
+        });
+        item.append(times);
+        requests.prepend(item);
+    });
+}
+
 (function(open) {
     XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
         var conn = [method, url, null, [[0, Date.now()]], "waiting"];
@@ -202,8 +235,6 @@ window.addEventListener("error", function(e){
                     conn[4] = "ok";
                 }
                 laststate = this.readyState;
-                console.log("HTTP Request", conn);
-                console.log(laststate);
             }
         });
         this.addEventListener("error", function(){
@@ -216,7 +247,6 @@ window.addEventListener("error", function(e){
             conn[3] = "timeout";
         });
         http_requests.push(conn);
-        console.log("HTTP Request", conn);
         open.call(this, method, url, async, user, pass);
     }
 })(XMLHttpRequest.prototype.open);
@@ -232,7 +262,6 @@ window.addEventListener("error", function(e){
             conn[3] = "error";
         });
         http_requests.push(conn);
-        console.log("HTTP Request", conn);
     }
 })(window.fetch);
 
@@ -257,7 +286,6 @@ window.addEventListener("error", function(e){
             conn[4] = "error";
         });
         http_requests.push(conn);
-        console.log("HTTP Request", conn);
         return ws;
     }
 })(window.WebSocket);
@@ -407,8 +435,7 @@ function update(){
             content.classList.add("network");
             var requests = document.createElement("div");
             requests.classList.add("requests");
-            http_requests.forEach((request) => {
-            });
+            conn_update(requests);
             content.append(requests);
         } else if (selected === "application"){
             var item = document.createElement("div");
