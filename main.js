@@ -225,7 +225,7 @@ var header = document.createElement("div");
 header.classList.add("header");
 header.addEventListener("pointermove", mvfc);
 div.addEventListener("touchmove", function(event){
-    if (event.target.classList.contains("header")){
+    if (event.target.classList.contains("header") || event.target.classList.contains("fullbtn")){
         event.preventDefault();
     }
 }, { passive: false });
