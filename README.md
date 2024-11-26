@@ -17,16 +17,15 @@ javascript:(()=>{var script=document.createElement("script");script.src="https:/
 対策を検討中です。
 
 # ビルド方法
-開発しやすくするためにファイルを複数に別けています。
 ```
 git clone https://github.com/siyukatu/phonedev
 cd phonedev
-python3 build.py
+npm run build
 ```
-するとoutputフォルダが作成され、その中にmain.jsファイルが生成されます。<br>
-そのmain.jsを実行するとツールが起動します。
+このコマンドを実行すると `output` フォルダが作成され、その中に `main.js` ファイルが生成されます。<br>
+その `main.js` を実行するとツールが起動します。
 
 ## Cloudflare Pagesでのビルド設定
-Build command: `python3 build.py`<br>
+Build command: `npm run build`<br>
 Build output directory: `output`<br>
 その他お好みの設定を行って下さい。
