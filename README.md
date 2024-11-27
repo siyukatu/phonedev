@@ -12,10 +12,11 @@
 javascript:(()=>{var script=document.createElement("script");script.src="https://phonedev.siyukatu.com/main.js?_="+Date.now();document.body.append(script);})();
 ```
 コピーして貼り付けると、 `javascript:` の部分が消える場合があります。<br>
-消える場合は手動で追加して下さい。
+消える場合は手動で追加して下さい。<br>
+ブックマーク追加がおすすめです。
 
 ### CSPが有効になっている場合
-対策を検討中です。
+https://phonedev.siyukatu.com/main.js の内容を全てコピーし、 `javascript:` を付けて実行して下さい。
 
 # ビルド方法
 ```
