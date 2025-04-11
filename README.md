@@ -5,6 +5,8 @@
 # phonedev
 スマホで使えるデベロッパーツールもどきです。<br>
 [Discordサーバー](https://discord.gg/pGCcfzKfz3)
+<img width="1512" alt="image" src="https://github.com/user-attachments/assets/d5e057bd-af37-4694-82d7-6e7184ce9076" />
+
 
 ## 起動方法
 以下のコードをコピーし、ブラウザのURL欄に貼り付けてください。
